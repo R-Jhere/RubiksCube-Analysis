@@ -14,46 +14,47 @@ int main() {
     std::cout << " Heuristics — Test Suite" << std::endl;
     std::cout << "═══════════════════════════════════════════" << std::endl;
 
-    // Goal → Goal = 0
+    // h(goal) = 0
     std::cout << "\n[Goal State]" << std::endl;
-    check(misplaced_cubies(GOAL_STATE, GOAL_STATE) == 0,
-          "h(GOAL, GOAL) == 0");
+    check(misplaced_cubies(GOAL_STATE, GOAL_STATE) == 0, "h(GOAL) == 0");
+    check(misplaced_stickers_raw(GOAL_STATE, GOAL_STATE) == 0, "raw(GOAL) == 0");
 
-    // Single move > 0
-    std::cout << "\n[Single-Move Scrambles]" << std::endl;
+    // h(scramble) > 0 for all moves
+    std::cout << "\n[Single-Move: h > 0]" << std::endl;
     for (int m = 0; m < NUM_MOVES; m++) {
         State s = apply_move(GOAL_STATE, m);
         int h = misplaced_cubies(s, GOAL_STATE);
-        check(h > 0, move_to_string(m) + " scramble: h=" + std::to_string(h) + " > 0");
+        int raw = misplaced_stickers_raw(s, GOAL_STATE);
+        check(h > 0, move_to_string(m) + ": h=" + std::to_string(h) +
+              " (raw=" + std::to_string(raw) + ")");
     }
 
-    // Admissibility: h <= optimal_depth (loose check for small depths)
-    // A single move changes at most 20 stickers, so h <= 20 for depth 1
-    std::cout << "\n[Admissibility Bounds]" << std::endl;
+    // Admissibility: h(1-move) <= 1 (optimal cost for 1-move scramble)
+    std::cout << "\n[Admissibility: h(1-move) <= optimal=1]" << std::endl;
     for (int m = 0; m < NUM_MOVES; m++) {
         State s = apply_move(GOAL_STATE, m);
         int h = misplaced_cubies(s, GOAL_STATE);
-        check(h <= 20, move_to_string(m) + ": h=" + std::to_string(h) + " <= 20");
+        check(h <= 1, move_to_string(m) + ": h=" + std::to_string(h) + " <= 1");
     }
 
-    // Multi-move scramble: h should increase (generally)
-    std::cout << "\n[Multi-Move Scrambles]" << std::endl;
-    for (int depth : {1, 3, 5, 7}) {
+    // Multi-depth admissibility
+    std::cout << "\n[Multi-Depth Admissibility]" << std::endl;
+    for (int depth : {1, 3, 5}) {
         State s = generate_scramble(depth, 42);
         int h = misplaced_cubies(s, GOAL_STATE);
-        check(h > 0, "depth=" + std::to_string(depth) + ": h=" + std::to_string(h) + " > 0");
-        check(h <= NUM_STICKERS, "  h <= 54 (max possible)");
-        std::cout << "    depth=" << depth << " → h=" << h << std::endl;
+        int raw = misplaced_stickers_raw(s, GOAL_STATE);
+        check(h <= depth, "depth=" + std::to_string(depth) +
+              ": h=" + std::to_string(h) + " <= " + std::to_string(depth) +
+              " (raw=" + std::to_string(raw) + ")");
     }
 
-    // get_heuristic selector
-    std::cout << "\n[Heuristic Selector]" << std::endl;
+    // Selector
+    std::cout << "\n[Selector]" << std::endl;
     HeuristicFn fn = get_heuristic("misplaced");
-    check(fn(GOAL_STATE, GOAL_STATE) == 0, "get_heuristic(\"misplaced\") works");
-
+    check(fn(GOAL_STATE, GOAL_STATE) == 0, "get_heuristic works");
     bool threw = false;
     try { get_heuristic("invalid"); } catch (...) { threw = true; }
-    check(threw, "get_heuristic(\"invalid\") throws");
+    check(threw, "invalid name throws");
 
     std::cout << "\n═══════════════════════════════════════════" << std::endl;
     std::cout << " Results: " << passed << " passed, "

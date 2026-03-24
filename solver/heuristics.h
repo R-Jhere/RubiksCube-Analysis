@@ -22,6 +22,11 @@ using HeuristicFn = std::function<int(const State&, const State&)>;
 ///   misplaced_cubies(scramble_n, GOAL) <= n * 20  (each move changes ≤ 20)
 int misplaced_cubies(const State& state, const State& goal);
 
+// ─── Raw Sticker Count (for display only, NOT for solvers) ──────
+/// Returns the raw count of misplaced stickers (0-54), unscaled.
+/// Use this for benchmarking output, NOT as a heuristic for A*/IDA*.
+int misplaced_stickers_raw(const State& state, const State& goal);
+
 // ─── Manhattan Distance Heuristic (Phase 3 — stub) ─────────────
 /// For each cubie, compute minimum moves to reach goal position.
 /// Stronger than misplaced_cubies. NOT YET IMPLEMENTED.
