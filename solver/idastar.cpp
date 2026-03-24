@@ -59,7 +59,7 @@ static int ida_search(
     int& nodes,
     const std::chrono::steady_clock::time_point& start_time)
 {
-    const State& node = path.back();
+    const State node = path.back();  // copy — survives push_back reallocation
     int f = g + h(node, goal);
 
     // ── PRUNE: f exceeds current threshold ──
