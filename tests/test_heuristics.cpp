@@ -37,21 +37,23 @@ int main() {
         check(h <= 1, move_to_string(m) + ": h=" + std::to_string(h) + " <= 1");
     }
 
-    // Multi-depth admissibility
-    std::cout << "\n[Multi-Depth Admissibility]" << std::endl;
-    for (int depth : {1, 3, 5}) {
-        State s = generate_scramble(depth, 42);
-        int h = misplaced_cubies(s, GOAL_STATE);
-        int raw = misplaced_stickers_raw(s, GOAL_STATE);
-        check(h <= depth, "depth=" + std::to_string(depth) +
-              ": h=" + std::to_string(h) + " <= " + std::to_string(depth) +
-              " (raw=" + std::to_string(raw) + ")");
+    // Multi-depth/Seed admissibility
+    std::cout << "\n[Admissibility: Variable Depth & Seed]" << std::endl;
+    for (int depth : {1, 3, 5, 7}) {
+        for (int seed : {42, 100, 777}) {
+            State s = generate_scramble(depth, seed);
+            int h = misplaced_cubies(s, GOAL_STATE);
+            check(h <= depth, "depth=" + std::to_string(depth) + 
+                  " seed=" + std::to_string(seed) + ": h=" + std::to_string(h) + " <= " + std::to_string(depth));
+        }
     }
 
     // Selector
     std::cout << "\n[Selector]" << std::endl;
-    HeuristicFn fn = get_heuristic("misplaced");
-    check(fn(GOAL_STATE, GOAL_STATE) == 0, "get_heuristic works");
+    HeuristicFn fn1 = get_heuristic("misplaced");
+    HeuristicFn fn2 = get_heuristic("manhattan");
+    check(fn1(GOAL_STATE, GOAL_STATE) == 0, "selector(misplaced) works");
+    check(fn2(GOAL_STATE, GOAL_STATE) == 0, "selector(manhattan) works");
     bool threw = false;
     try { get_heuristic("invalid"); } catch (...) { threw = true; }
     check(threw, "invalid name throws");

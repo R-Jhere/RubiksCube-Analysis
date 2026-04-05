@@ -11,10 +11,10 @@ using HeuristicFn = std::function<int(const State&, const State&)>;
 /// Counts sticker positions where state[i] != goal[i].
 ///
 /// Admissibility proof:
-///   Each move affects at most 20 stickers (8 face + 12 ring).
-///   Each misplaced cubie requires >= 1 move to fix.
-///   Therefore h(n) <= h*(n) for all n, guaranteeing optimal
-///   solutions when used with A* or IDA*.
+///   Each move affects 12 stickers on adjacent faces.
+///   Stickers on the face being turned stay on that face (monochromatic in goal).
+///   Therefore h(n) = ceil(count/12) <= h*(n) for all n, guaranteeing 
+///   optimal solutions when used with A* or IDA*.
 ///
 /// Verification:
 ///   misplaced_cubies(GOAL, GOAL) == 0

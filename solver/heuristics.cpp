@@ -14,15 +14,19 @@
 //     - 1-move scramble: ~12 stickers wrong → h = 12/8 = 1 ✓ (h ≤ h*)
 //     - 5-move scramble: ~40 stickers wrong → h = 40/8 = 5 ✓ (h ≤ h*)
 //
-// Admissibility guarantee: h(n) = count/8 ≤ h*(n) for all n.
-// This is because each move fixes at most 8 cubies.
+// Admissibility guarantee: h(n) = (count + 11) / 12 <= h*(n) for all n.
+// This is because each move fixes at most 12 misplaced sticker colors.
 //
 int misplaced_cubies(const State& state, const State& goal) {
     int count = 0;
     for (int i = 0; i < NUM_STICKERS; i++) {
         if (state[i] != goal[i]) count++;
     }
-    return count / 8;  // admissible: each move fixes ≤ 8 cubies
+    // A single move affects 12 stickers (side edges).
+    // The 8 rotating face stickers don't change color relative to their target face.
+    // So max misplaced stickers fixed per move is 12.
+    // ceil(count / 12) is strongly admissible.
+    return (count + 11) / 12; 
 }
 
 // ─── Raw sticker count (for display/benchmarking, NOT for solvers) ──
