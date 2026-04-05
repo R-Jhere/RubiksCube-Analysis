@@ -1,0 +1,110 @@
+@import "tailwindcss";
+
+/* ─── Design Tokens (Tailwind v4 CSS-first) ─────────────────── */
+@theme {
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  --color-primary: oklch(0.65 0.18 250);
+  --color-primary-light: oklch(0.75 0.14 250);
+  --color-primary-dark: oklch(0.50 0.20 250);
+
+  --color-accent: oklch(0.72 0.19 160);
+  --color-accent-light: oklch(0.82 0.14 160);
+
+  --color-warning: oklch(0.78 0.16 70);
+  --color-error: oklch(0.65 0.22 25);
+  --color-success: oklch(0.72 0.19 145);
+
+  --color-surface-50: oklch(0.985 0.002 260);
+  --color-surface-100: oklch(0.96 0.004 260);
+  --color-surface-200: oklch(0.92 0.006 260);
+  --color-surface-700: oklch(0.35 0.015 260);
+  --color-surface-800: oklch(0.22 0.015 260);
+  --color-surface-900: oklch(0.15 0.012 260);
+  --color-surface-950: oklch(0.10 0.010 260);
+}
+
+/* ─── Base Reset ────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: linear-gradient(145deg, var(--color-surface-950), var(--color-surface-900));
+  color: var(--color-surface-100);
+  min-height: 100vh;
+}
+
+/* ─── Scrollbar Styling ─────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: oklch(0.4 0.01 260);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.5 0.01 260);
+}
+
+/* ─── Custom Animations ─────────────────────────────────────── */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ─── Glass Card Utility ────────────────────────────────────── */
+.glass-card {
+  background: linear-gradient(
+    135deg,
+    oklch(0.18 0.012 260 / 0.8),
+    oklch(0.14 0.010 260 / 0.6)
+  );
+  backdrop-filter: blur(12px);
+  border: 1px solid oklch(0.3 0.01 260 / 0.4);
+  border-radius: 16px;
+}
+
+.glass-card-hover {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.glass-card-hover:hover {
+  border-color: oklch(0.4 0.02 260 / 0.5);
+  box-shadow: 0 8px 32px oklch(0 0 0 / 0.3);
+}
